@@ -1,31 +1,33 @@
 package scrabble
 
-import "unicode"
+import (
+	"strings"
+)
 
-func value(r rune) int {
-	switch r {
-	case 'a', 'e', 'i', 'o', 'u', 'l', 'n', 'r', 's', 't':
-		return 1
-	case 'd', 'g':
-		return 2
-	case 'b', 'c', 'm', 'p':
-		return 3
-	case 'f', 'h', 'v', 'w', 'y':
-		return 4
-	case 'k':
-		return 5
-	case 'j', 'x':
-		return 8
-	case 'q', 'z':
-		return 10
-	default:
-		return 0
+var scoreMap = make(map[rune]int)
+
+func init() {
+	classes := map[string]int{
+		"AEIOULNRST": 1,
+		"DG":         2,
+		"BCMP":       3,
+		"FHVWY":      4,
+		"K":          5,
+		"JX":         8,
+		"QZ":         10,
+	}
+	for char, score := range classes {
+		for _, letter := range char {
+			scoreMap[letter] = score
+		}
 	}
 }
 
 func Score(word string) (score int) {
+
+	word = strings.ToUpper(word)
 	for _, c := range word {
-		score += value(unicode.ToLower(c))
+		score += scoreMap[c]
 	}
 	return
 }
